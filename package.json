@@ -18,8 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migrate:dev": "npx sequelize-cli db:migrate",
-    "migrate:test": "npx sequelize-cli db:migrate --env test"
+    "sync:alter": "cross-env SYNC_TYPE=alter ts-node src/sequelize/sync.ts",
+    "sync:force": "cross-env SYNC_TYPE=force ts-node src/sequelize/sync.ts",
+    "sync:test": "cross-env SYNC_TYPE=force cross-env NODE_ENV=test ts-node src/sequelize/sync.ts --env test"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -58,6 +59,7 @@
     "@types/supertest": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",

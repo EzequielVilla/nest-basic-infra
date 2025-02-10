@@ -1,6 +1,7 @@
 # Basic info
 
-This repo contains the basic infrastructure for a nestjs backend project. This includes: 
+This repo contains the basic infrastructure for a nestjs backend project. This includes:
+
 - Docker and docker-compose
 - .env template
 - Sequelize
@@ -10,8 +11,9 @@ This repo contains the basic infrastructure for a nestjs backend project. This i
 - Uses of Guards, like Jwt and Roles
 - Unit and e2e testing
 
+**Warning**: maybe you need to install cross-env locally to do the sync.
 
-After this , you have an explanation of how to work in dev environment and add/do some generic tasks. 
+After this , you have an explanation of how to work in dev environment and add/do some generic tasks.
 
 ## Dev
 
@@ -62,20 +64,12 @@ module.exports = {
 }
 ```
 
-### Commands useful
+#### New tables
 
-[Sequelize documentation](https://sequelize.org/docs/v6/other-topics/migrations/#creating-the-first-model-and-migration)
+1- Define the entities in the module
+2- Run the command npm run sync:alter
 
-#### new tables
-
-<!-- require more test to check the use of this step  -->
-<!-- 1- Change the .entity file and rename it to .model, using the Decorator @Column with information inside to declare which type expect, null, pk, etc -->
-
-1- Run the next command to create a migration: `npx sequelize-cli migration:generate --name <name-of-migration>`
-
-3- Run the migration to db: `npx sequelize-cli db:migrate`
-
-**_WARNING:_** In case of a rollback from the db, use the command "undo": `npx sequelize-cli db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js`. _Don't recommended_ If you drop the table from pgadmin, go to the table `SequelizeMeta` and delete the register of the migration with the same name than the /migrations folder
+**Warning**: maybe you need to install cross-env locally to do the sync.
 
 #### Connection with docker db:
 
@@ -92,6 +86,4 @@ But in the `config.js` file use `localhost` and the port you define like `host_p
 At the moment of a creation of a new resource, if this res will be a representation of a table in the DB, you must:
 1- Go to the new module <new-res>.module.ts and add an import with: `imports: [SequelizeModule.forFeature([<new-res>])],`
 
-2- Add this export: `exports: [SequelizeModule],`
-
-3- Go to `db.module.ts` and add the new entity to the array of `models`
+2- Go to `db.module.ts` and add the new entity to the array of `models`
