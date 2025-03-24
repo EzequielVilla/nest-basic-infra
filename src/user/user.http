@@ -1,0 +1,14 @@
+
+### Update user name
+
+PATCH http://localhost:3000/api/user/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoSWQiOiI2N2UxN2RjNjBhMzBkYTRlZmFmYzA4ZjQiLCJpYXQiOjE3NDI4MzMxMzcsImV4cCI6MTc0MjgzNjczN30.EnNhTLO3-PCUg-TdjCaQbVh4S46bv26cDgjRVSYBpZU
+Content-Type: application/json
+
+{
+    "name": "changed_name_fixed"
+}
+
+### Get all users, only ADMIN can do it
+GET http://localhost:3000/api/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoSWQiOiI2N2UxN2RjNjBhMzBkYTRlZmFmYzA4ZjQiLCJpYXQiOjE3NDI4MzMxMzcsImV4cCI6MTc0MjgzNjczN30.EnNhTLO3-PCUg-TdjCaQbVh4S46bv26cDgjRVSYBpZU
