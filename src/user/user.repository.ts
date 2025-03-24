@@ -17,14 +17,14 @@ export class UserRepository {
     try {
       await this.userRepository.create({ name, role, authId }, transactionHost);
     } catch (error) {
-      throw new HttpException('ERROR_CREATING_USER', 400);
+      throw new HttpException('ERROR_CREATING_USER', 400, { cause: error.message });
     }
   }
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
       await this.userRepository.update(updateUserDto, { where: { id } });
     } catch (error) {
-      throw new HttpException('ERROR_UPDATING_USER', 400);
+      throw new HttpException('ERROR_UPDATING_USER', 400, { cause: error.message });
     }
   }
   async findAll(): Promise<User[]> {
@@ -37,7 +37,7 @@ export class UserRepository {
         },
       });
     } catch (error) {
-      throw new HttpException('ERROR_RETRIEVING_USERS', 400);
+      throw new HttpException('ERROR_RETRIEVING_USERS', 400, { cause: error.message });
     }
   }
 }

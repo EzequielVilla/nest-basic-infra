@@ -63,10 +63,10 @@ export class AuthService {
     try {
       const isMatch = await bcrypt.compare(password, passwordFromDb);
       if (!isMatch) {
-        throw new Error();
+        throw new Error('WRONG_PASSWORD');
       }
     } catch (error) {
-      throw new HttpException('WRONG_PASSWORD', 400);
+      throw new HttpException('WRONG_PASSWORD', 400, { cause: error.message });
     }
   }
 }

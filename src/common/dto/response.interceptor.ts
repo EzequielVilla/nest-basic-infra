@@ -48,7 +48,7 @@ export class ResponseInterceptor implements NestInterceptor {
       }
 
       logger.error(
-        `ENDPOINT_PATH: ${request.url} \n STACK_ERROR: ${exception.stack}`,
+        `ENDPOINT_PATH: ${request.url} \n CAUSE: ${exception.message} \n STACK_ERROR: ${exception.stack}`,
       );
     }
     response.status(status).json({

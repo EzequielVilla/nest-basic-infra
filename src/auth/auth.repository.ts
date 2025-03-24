@@ -22,7 +22,7 @@ export class AuthRepository implements IAuthRepository {
       if (error.message === 'USER_NOT_FOUND') {
         throw new HttpException('USER_NOT_FOUND', 404);
       }
-      throw new HttpException('ERROR_RETRIEVING_USER', 400);
+      throw new HttpException('ERROR_RETRIEVING_USER', 400, { cause: error.message });
     }
   }
 
@@ -40,14 +40,14 @@ export class AuthRepository implements IAuthRepository {
       if (error.message === 'Validation error') {
         throw new HttpException('EMAIL_MUST_BE_UNIQUE', 400);
       }
-      throw new HttpException(error.message, 400);
+      throw new HttpException(error.message, 400, { cause: error.message });
     }
   }
   async findAll() {
     try {
       return await this.authRepository.findAll();
     } catch (error) {
-      throw new HttpException(error.message, 400);
+      throw new HttpException(error.message, 400, { cause: error.message });
     }
   }
   async findById(id: string) {
@@ -69,7 +69,7 @@ export class AuthRepository implements IAuthRepository {
       if (error.message === 'AUTH_NOT_FOUND') {
         throw new HttpException(error.message, 404);
       }
-      throw new HttpException('ERROR_RETRIEVING_AUTH_ID', 400);
+      throw new HttpException('ERROR_RETRIEVING_AUTH_ID', 400, { cause: error.message });
     }
   }
 }
