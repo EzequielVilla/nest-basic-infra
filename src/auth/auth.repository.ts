@@ -46,8 +46,13 @@ export class AuthRepository implements IAuthRepository {
 
   async findOneByEmail(email: string): Promise<Auth> {
     try {
-      return await this.authModel.findOne({ email }).exec();
+      const auth = await this.authModel.findOne({ email }).exec();
+      if (!auth) {
+        throw new HttpException('AUTH_NOT_FOUND', 404);
+      }
+      return auth;
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new HttpException('ERROR_FINDING_AUTH', 400, {
         cause: error,
         description: 'Failed to find auth',
