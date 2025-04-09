@@ -9,6 +9,7 @@ interface EnvVars {
   DB_USERNAME: string;
   DB_PASSWORD: string;
   DB_DATABASE: string;
+  DB_NAME: string;
   JWT_SECRET: string;
   PORT: number;
 }
@@ -19,14 +20,27 @@ const envSchema = Joi.object({
   DB_USERNAME: Joi.string().required(),
   DB_PASSWORD: Joi.string().required(),
   DB_DATABASE: Joi.string().required(),
+  DB_NAME: Joi.string().required(),
   JWT_SECRET: Joi.string().required(),
   PORT: Joi.number().default(3000),
 });
+let DB_DATABASE: string;
+let DB_NAME: string;
 
-const { error, value: validatedEnv } = envSchema.validate(process.env, {
-  allowUnknown: true,
-  stripUnknown: true,
-});
+if (process.env.NODE_ENV !== 'test') {
+  DB_DATABASE = process.env.DB_DATABASE;
+  DB_NAME = process.env.DB_NAME;
+} else {
+  DB_DATABASE = process.env.DB_TEST_DATABASE;
+  DB_NAME = process.env.DB_TEST_NAME;
+}
+const { error, value: validatedEnv } = envSchema.validate(
+  { ...process.env, DB_DATABASE, DB_NAME },
+  {
+    allowUnknown: true,
+    stripUnknown: true,
+  },
+);
 
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
@@ -40,6 +54,7 @@ export const envs = {
   dbUsername: envVars.DB_USERNAME,
   dbPassword: envVars.DB_PASSWORD,
   dbDatabase: envVars.DB_DATABASE,
+  dbName: envVars.DB_NAME,
   jwtSecret: envVars.JWT_SECRET,
   port: envVars.PORT,
 };

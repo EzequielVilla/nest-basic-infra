@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 
 import { IAuthRepository } from './auth.interface';
 import { Auth, AuthDocument } from './entities/auth.entity';
@@ -9,17 +9,22 @@ import { Auth, AuthDocument } from './entities/auth.entity';
 export class AuthRepository implements IAuthRepository {
   constructor(@InjectModel(Auth.name) private authModel: Model<AuthDocument>) {}
 
-  async create(email: string, password: string): Promise<Auth> {
+  async create(
+    email: string,
+    password: string,
+    session: ClientSession,
+  ): Promise<Auth> {
     try {
-      const auth = await this.authModel.create({
+      const auth = new this.authModel({
         email,
         password,
         _id: new Types.ObjectId(),
       });
+      await auth.save({ session });
       return auth;
     } catch (error) {
       if (error.code === 11000) {
-        throw new HttpException('AUTH_ALREADY_EXISTS', 409);
+        throw new HttpException('EMAIL_ALREADY_EXISTS', 409);
       }
       throw new HttpException('ERROR_CREATING_AUTH', 400, {
         cause: error,

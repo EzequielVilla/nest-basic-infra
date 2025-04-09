@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Types } from 'mongoose';
+import { ClientSession, Types } from 'mongoose';
 import { User } from './../user/entities/user.entity';
 import { UserService } from './../user/user.service';
 import { AuthRepository } from './auth.repository';
@@ -16,11 +16,14 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
-  async create(createAuthDto: CreateAuthDto) {
+  async create(createAuthDto: CreateAuthDto, session: ClientSession) {
     const password = await this.hashPassword(createAuthDto.password);
-    const auth = await this.repository.create(createAuthDto.email, password);
-    await this.userService.create(createAuthDto.name, auth._id);
-
+    const auth = await this.repository.create(
+      createAuthDto.email,
+      password,
+      session,
+    );
+    await this.userService.create(createAuthDto.name, auth._id, session);
     return auth;
   }
 

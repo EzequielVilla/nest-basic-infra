@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Types } from 'mongoose';
+import { ClientSession, Types } from 'mongoose';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserRepository } from './user.repository';
@@ -10,9 +10,10 @@ export class UserService {
   async create(
     name: string,
     authId: Types.ObjectId,
+    session: ClientSession,
     role?: string,
   ): Promise<User> {
-    return await this.repository.create({ name, authId, role });
+    return await this.repository.create({ name, authId, role }, session);
   }
   async update(id: string, updateUserDto: UpdateUserDto) {
     await this.repository.update(id, updateUserDto);

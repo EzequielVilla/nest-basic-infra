@@ -1,32 +1,36 @@
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Sequelize } from 'sequelize-typescript';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
+import { Connection } from 'mongoose';
+import { DbService } from '../src/db/db.service';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
-  let sequelize: Sequelize;
-
+  let dbConnection: Connection;
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
     app = moduleFixture.createNestApplication();
+
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidUnknownValues: true,
+      }),
+    );
     app.setGlobalPrefix('api'); // ADD GLOBAL PREFIX TO ALL TESTS APP
-    sequelize = app.get<Sequelize>(Sequelize);
     await app.init();
+    dbConnection = moduleFixture.get<DbService>(DbService).getDbHandle();
   });
   beforeEach(async () => {});
   afterEach(async () => {});
   afterAll(async () => {
-    await sequelize.sync({ force: true });
-    if (app) {
-      await app.close();
-    }
-    if (sequelize) {
-      await sequelize.close();
-    }
+    await dbConnection.collection('auths').deleteMany({});
+    await dbConnection.collection('users').deleteMany({});
+
+    await app.close();
   });
   describe('/auth/signup (POST)', () => {
     it('Created', () => {
@@ -39,21 +43,22 @@ describe('AuthController (e2e)', () => {
       return request(app.getHttpServer())
         .post('/api/auth/signup')
         .send({ email: 'test@gmail.com', password: 'test123123', name: 'eze' })
-        .expect(400);
+        .expect(409);
     });
     it("Name can't be empty", () => {
       return request(app.getHttpServer())
         .post('/api/auth/signup')
-        .send({ email: 'test@gmail.com', password: 'test123123' })
+        .send({ email: 'test2@gmail.com', password: 'test123123' })
         .expect(400);
     });
     it('Password to short', () => {
       return request(app.getHttpServer())
         .post('/api/auth/signup')
-        .send({ email: 'test@gmail.com', password: '123', name: 'eze' })
+        .send({ email: 'test3@gmail.com', password: '123', name: 'eze' })
         .expect(400);
     });
   });
+
   describe('/auth/login (POST)', () => {
     it('Success', () => {
       return request(app.getHttpServer())

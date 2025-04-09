@@ -1,16 +1,16 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import { User, UserDocument } from './entities/user.entity';
 
 @Injectable()
 export class UserRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async create(data: Partial<User>): Promise<User> {
+  async create(data: Partial<User>, session: ClientSession): Promise<User> {
     const user = new this.userModel({ ...data, _id: new Types.ObjectId() });
     try {
-      return await user.save();
+      return await user.save({ session });
     } catch (error) {
       throw new HttpException('ERROR_CREATING_USER', 400, {
         cause: error,

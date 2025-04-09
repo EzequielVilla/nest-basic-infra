@@ -9,17 +9,27 @@ import {
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { LocalAuthGuard } from './security/local-auth.guard';
+import { DbService } from '../db/db.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private dbService: DbService,
+  ) {}
 
   @Post('/signup')
   async create(@Body() createAuthDto: CreateAuthDto) {
+    const session = await this.dbService.getSessionWithTransaction();
     try {
-      await this.authService.create(createAuthDto);
+      const response = await this.authService.create(createAuthDto, session);
+      await session.commitTransaction();
+      return response;
     } catch (error) {
+      await session.abortTransaction();
       throw error;
+    } finally {
+      await session.endSession();
     }
   }
 

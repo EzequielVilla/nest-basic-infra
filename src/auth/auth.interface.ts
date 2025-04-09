@@ -1,10 +1,14 @@
-import { Types } from 'mongoose';
+import { ClientSession, Types } from 'mongoose';
 import { Auth } from './entities/auth.entity';
 
 export interface IAuthService {}
 
 export interface IAuthRepository {
-  create(email: string, password: string): Promise<Auth>;
+  create(
+    email: string,
+    password: string,
+    session: ClientSession,
+  ): Promise<Auth>;
   findAll(): Promise<Auth[]>;
   findOneByEmail(email: string): Promise<Auth>;
   findById(id: Types.ObjectId): Promise<Auth>;
