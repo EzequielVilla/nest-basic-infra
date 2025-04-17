@@ -32,6 +32,7 @@ export class ResponseInterceptor implements NestInterceptor {
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     let message = 'SERVER_UNEXPECTED_ERROR';
+    // set proper message
     if (exception instanceof HttpException) {
       const errorResponse = exception.getResponse();
       const errorIsObject = typeof errorResponse === 'object';
@@ -46,11 +47,10 @@ export class ResponseInterceptor implements NestInterceptor {
       } else if (isHttpException) {
         message = errorResponse;
       }
-
-      logger.error(
-        `ENDPOINT_PATH: ${request.url} \n CAUSE: ${exception.message} \n STACK_ERROR: ${exception.stack}`,
-      );
     }
+    logger.error(
+      `ENDPOINT_PATH: ${request.url} \n CAUSE: ${exception.cause || message} \n STACK_ERROR: ${exception.stack}`,
+    );
     response.status(status).json({
       status: false,
       statusCode: status,
