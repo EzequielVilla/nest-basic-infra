@@ -47,10 +47,10 @@ export class ResponseInterceptor implements NestInterceptor {
         message = errorResponse;
       }
 
-      logger.error(
-        `ENDPOINT_PATH: ${request.url} \n CAUSE: ${exception.message} \n STACK_ERROR: ${exception.stack}`,
-      );
     }
+    logger.error(
+      `ENDPOINT_PATH: ${request.url} \n CAUSE: ${exception.cause || message} \n STACK_ERROR: ${exception.stack}`,
+    );
     response.status(status).json({
       status: false,
       statusCode: status,

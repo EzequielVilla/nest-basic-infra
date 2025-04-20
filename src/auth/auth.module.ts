@@ -3,7 +3,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UserModule } from './../user/user.module';
-import { UserService } from './../user/user.service';
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
@@ -25,7 +24,7 @@ import { LocalStrategy } from './security/local.strategy';
   providers: [
     AuthService,
     AuthRepository,
-    UserService,
+    // UserService, // Test if it is necessary, because the import should handle the providers that user module exports
     LocalStrategy,
     JwtStrategy,
   ],
