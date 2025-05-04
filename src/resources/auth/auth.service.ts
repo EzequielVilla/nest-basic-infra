@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { TransactionHost } from './../common/types';
+import { TransactionHost } from '../../common/types';
 import { User } from './../user/entities/user.entity';
 import { UserService } from './../user/user.service';
 import { AuthRepository } from './auth.repository';
