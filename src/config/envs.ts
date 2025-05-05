@@ -28,6 +28,12 @@ if (process.env.NODE_ENV === 'test') {
   DB_HOST = process.env.DB_TEST_HOST;
   DB_PORT = process.env.DB_TEST_PORT;
   DB_DATABASE = process.env.DB_TEST_DATABASE;
+} else if (
+  process.env.SYNC_TYPE === 'alter' ||
+  (process.env.SYNC_TYPE === 'force' && process.env.NODE_ENV === 'development')
+) {
+  DB_HOST = process.env.DB_HOST_SYNC;
+  DB_PORT = process.env.DB_PORT_SYNC;
 }
 const { error, value } = envsSchema.validate({
   ...process.env,

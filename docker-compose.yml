@@ -14,7 +14,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=123123
-      - POSTGRES_DB=group-organization
+      - POSTGRES_DB=monolith-db
 
   pgAdmin:
     user: root
@@ -33,7 +33,7 @@ services:
       - ./pgadmin:/certs/server.cert
       - ./pgadmin:/certs/server.key
       - ./pgadmin:/pgadmin4/servers.json
-  organization-monolith:
+  monolith:
     build:
       context: .
       target: dev
@@ -47,7 +47,7 @@ services:
     ports:
       - 3000:3000
     environment:
-      - DATABASE_URL=postgresql://postgres:123123@db:5432/group-organization
+      - DATABASE_URL=postgresql://postgres:123123@db:5432/monolith-db
     # develop:
     #   watch:
     #     - action: sync

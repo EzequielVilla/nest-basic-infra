@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { Auth } from '../resources/auth/entities/auth.entity';
+import { User } from '../resources/user/entities/user.entity';
 import { envs } from './../config/envs';
 
 const isTestEnv = process.env.NODE_ENV === 'test';
+const isProduction = process.env.NODE_ENV === 'production';
 @Module({
   imports: [
     SequelizeModule.forRoot({
@@ -12,9 +15,8 @@ const isTestEnv = process.env.NODE_ENV === 'test';
       username: envs.dbUsername,
       password: envs.dbPassword,
       database: envs.dbDatabase,
-      logging: !isTestEnv,
-      autoLoadModels: true,
-      // models: [Auth, User], // maybe we need this instead of autoLoadModels, i has some errors with the auto: true
+      logging: !isTestEnv || !isProduction,
+      models: [Auth, User],
     }),
   ],
 })

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from 'src/user/entities/user.entity';
-import { TransactionHost } from './../../src/common/types';
+import { TransactionHost } from '../../common/types';
 import { UserService } from './../../src/user/user.service';
 import { AuthService } from './Auth.service';
 import { AuthRepository } from './auth.repository';

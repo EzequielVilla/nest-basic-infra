@@ -1,33 +1,7 @@
-import { INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { Sequelize } from 'sequelize-typescript';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { app } from './test-setup';
 
 describe('AuthController (e2e)', () => {
-  let app: INestApplication;
-  let sequelize: Sequelize;
-
-  beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-    app = moduleFixture.createNestApplication();
-    app.setGlobalPrefix('api'); // ADD GLOBAL PREFIX TO ALL TESTS APP
-    sequelize = app.get<Sequelize>(Sequelize);
-    await app.init();
-  });
-  beforeEach(async () => {});
-  afterEach(async () => {});
-  afterAll(async () => {
-    await sequelize.sync({ force: true });
-    if (app) {
-      await app.close();
-    }
-    if (sequelize) {
-      await sequelize.close();
-    }
-  });
   describe('/auth/signup (POST)', () => {
     it('Created', () => {
       return request(app.getHttpServer())

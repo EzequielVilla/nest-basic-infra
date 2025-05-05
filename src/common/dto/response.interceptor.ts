@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   CallHandler,
   ExecutionContext,
   HttpException,
@@ -7,7 +8,7 @@ import {
   Logger,
   NestInterceptor,
 } from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 @Injectable()
@@ -15,9 +16,10 @@ export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     return next.handle().pipe(
       map((res: unknown) => this.responseHandler(res, context)),
-      catchError((err: HttpException) =>
-        throwError(() => this.errorHandler(err, context)),
-      ),
+      catchError((err: HttpException) => {
+        this.errorHandler(err, context);
+        return new Observable<never>();
+      }),
     );
   }
 
@@ -30,7 +32,7 @@ export class ResponseInterceptor implements NestInterceptor {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
+    const isBadRequest = exception instanceof BadRequestException;
     let message = 'SERVER_UNEXPECTED_ERROR';
     if (exception instanceof HttpException) {
       const errorResponse = exception.getResponse();
@@ -46,7 +48,11 @@ export class ResponseInterceptor implements NestInterceptor {
       } else if (isHttpException) {
         message = errorResponse;
       }
-
+    }
+    if (process.env.NODE_ENV !== 'test') {
+      logger.error(
+        `\n ENDPOINT_PATH: ${request.url} \n CAUSE: ${exception.cause || message} \n STACK_ERROR: ${exception.stack}`,
+      );
     }
     logger.error(
       `ENDPOINT_PATH: ${request.url} \n CAUSE: ${exception.cause || message} \n STACK_ERROR: ${exception.stack}`,
@@ -55,7 +61,7 @@ export class ResponseInterceptor implements NestInterceptor {
       status: false,
       statusCode: status,
       path: request.url,
-      message,
+      message: isBadRequest ? 'BAD_REQUEST_ERROR' : message,
     });
   }
 

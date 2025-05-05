@@ -17,9 +17,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
-    "sync:alter": "cross-env SYNC_TYPE=alter ts-node src/sequelize/sync.ts",
-    "sync:force": "cross-env SYNC_TYPE=force ts-node src/sequelize/sync.ts",
+    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",
+    "sync:alter": "cross-env SYNC_TYPE=alter cross-env NODE_ENV=development ts-node src/sequelize/sync.ts",
+    "sync:force": "cross-env SYNC_TYPE=force cross-env NODE_ENV=development ts-node src/sequelize/sync.ts",
     "sync:test": "cross-env SYNC_TYPE=force cross-env NODE_ENV=test ts-node src/sequelize/sync.ts --env test"
   },
   "dependencies": {

@@ -6,7 +6,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { RolesGuard } from 'src/auth/security/roles.guard';
+import { RolesGuard } from 'src/resources/auth/security/roles.guard';
 import { JwtAuthGuard } from './../auth/security/jwt-auth.guard';
 import { Roles } from './../auth/security/roles.decorator';
 import { ROLE } from './../common/types';

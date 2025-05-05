@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { TransactionHost } from './../common/types';
+import { TransactionHost } from '../../common/types';
 import { User } from './../user/entities/user.entity';
 import { IAuthRepository } from './auth.interface';
 import { Auth } from './entities/auth.entity';
@@ -22,7 +22,9 @@ export class AuthRepository implements IAuthRepository {
       if (error.message === 'USER_NOT_FOUND') {
         throw new HttpException('USER_NOT_FOUND', 404);
       }
-      throw new HttpException('ERROR_RETRIEVING_USER', 400, { cause: error.message });
+      throw new HttpException('ERROR_RETRIEVING_USER', 400, {
+        cause: error.message,
+      });
     }
   }
 
@@ -69,7 +71,9 @@ export class AuthRepository implements IAuthRepository {
       if (error.message === 'AUTH_NOT_FOUND') {
         throw new HttpException(error.message, 404);
       }
-      throw new HttpException('ERROR_RETRIEVING_AUTH_ID', 400, { cause: error.message });
+      throw new HttpException('ERROR_RETRIEVING_AUTH_ID', 400, {
+        cause: error.message,
+      });
     }
   }
 }
